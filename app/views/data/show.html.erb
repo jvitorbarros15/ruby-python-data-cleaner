@@ -1,0 +1,30 @@
+<h1>🧹 Data Cleaning Dashboard</h1>
+
+<%= form_with url: "/data/run", method: :post do %>
+  <button style="
+      padding: 12px 22px;
+      background: #4F46E5;
+      color: white;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;">
+    ▶️ Run Data Cleaning Scripts
+  </button>
+<% end %>
+
+<% if @check_output.present? || @remove_output.present? %>
+  <h2>1️⃣ Output — check_publications_cleaning.py</h2>
+  <pre><%= @check_output %></pre>
+
+  <h2>2️⃣ Output — remove_duplicates.py</h2>
+  <pre><%= @remove_output %></pre>
+
+  <p>📁 Excel generated in: <code>lib/assets/python/publications_audit.xlsx</code></p>
+<% end %>
+
+<br>
+
+<%= link_to "🏠 Back to Home", root_path,
+  style: "padding:10px 18px; background:#10B981; color:white; border-radius:8px; text-decoration:none;" %>
+
+
