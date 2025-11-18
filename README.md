@@ -43,7 +43,7 @@ The project was created to solve a real-world problem: cleaning large university
 
 ### Setup
 
-```bash
+
 git clone https://github.com/<your_username>/PublicationCleaner.git
 cd PublicationCleaner
 bundle install
@@ -56,7 +56,7 @@ bin/rails server
 # Usage
 
 1. Visit:  
-   **http://localhost:3000/**
+   ** http://localhost:3000/ **
 2. Go to **Data > Upload File**
 3. Select a `.csv` file
 4. Press **Run Cleaning**
