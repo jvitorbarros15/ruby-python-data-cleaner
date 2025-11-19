@@ -28,3 +28,39 @@
   style: "padding:10px 18px; background:#10B981; color:white; border-radius:8px; text-decoration:none;" %>
 
 
+
+/* Data Cleaning Prototype Form */
+
+<%= form_with url: data_path, multipart: true, method: :post do %>
+  <div>
+    <%= file_field_tag :file %>
+  </div>
+
+  <h3>Cleaning Data Options</h3>
+
+  <div>
+    <%= check_box_tag "options[remove_duplicates]", "1" %>
+    <%= label_tag "options_remove_duplicates", "Remove exact duplicates" %>
+  </div>
+
+  <div>
+    <%= check_box_tag "options[standardize_month]", "1" %>
+    <%= label_tag "options_standardize_month", "Standardize month column" %>
+  </div>
+
+  <div>
+    <%= label_tag :month_column, "Month column name" %>
+    <%= text_field_tag "options[month_column]", "month" %>
+  </div>
+
+  <div>
+    <%= label_tag :drop_columns, "Columns to remove (comma separated)" %>
+    <%= text_field_tag "options[drop_columns]", "internal_notes,temp_col" %>
+  </div>
+
+  <!-- add more controls like select boxes, radio buttons, etc -->
+
+  <div>
+    <%= submit_tag "Run cleaning" %>
+  </div>
+<% end %>
