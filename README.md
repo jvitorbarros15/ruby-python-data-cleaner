@@ -84,7 +84,7 @@ outputs/ # Cleaned result files
 
 This project intentionally ignores sensitive dataset files:
 
-Boo2.csv
+Book2.csv
 publications_audit.xlsx
 tmp/uploads/*
 tmp/outputs/*
