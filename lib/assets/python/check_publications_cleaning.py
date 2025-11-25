@@ -112,6 +112,7 @@ else:
 title_had_month = df_work.groupby('TITLE')['HAS_MONTH'].any().reset_index()
 title_had_month.columns = ['TITLE', 'ORIG_HAD_MONTH']
 check = df_kept.merge(title_had_month, on='TITLE', how='left')
+
 # If ORIG_HAD_MONTH is True, final DTM_PUB must not be 'December' (unless original month was 'December' itself)
 mask_wrong = (check['ORIG_HAD_MONTH'] == True) & (check['DTM_PUB'] == 'December')
 if mask_wrong.any():

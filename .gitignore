@@ -44,3 +44,6 @@ publications_audit.xlsx
 # Ignore any temp Python output files
 lib/assets/python/*.xlsx
 lib/assets/python/*.csv
+
+# Ignore Python cache files
+__pycache__/

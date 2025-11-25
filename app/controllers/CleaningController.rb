@@ -1,50 +1,63 @@
 require "json"
 
-# Controller for handling data cleaning requests
-# Assumes a Python script at python/check_publications_cleaning.py
-
 class CleaningController < ApplicationController
-def create
-  uploaded = params[:file]
-  raise "No file uploaded" unless uploaded
+  def new
+    # Renders the form
+  end
 
-  upload_path = Rails.root.join("tmp", "uploads", uploaded.original_filename)
-  FileUtils.mkdir_p(upload_path.dirname)
-  File.binwrite(upload_path, uploaded.read)
+  def create
+    raw_options = params.fetch(:options, {})
 
-  raw_options = params.fetch(:options, {})
+    uploaded = params[:file]
+    sample   = raw_options["sample_csv"].presence
 
-  config = {
-    remove_duplicates: raw_options["remove_duplicates"] == "1",
-    standardize_month: raw_options["standardize_month"] == "1",
-    month_column: raw_options["month_column"].presence || "month",
-    drop_columns: raw_options["drop_columns"].to_s.split(",").map(&:strip).reject(&:blank?)
-    # more options here later
-  }
+    if uploaded.present?
+      # user uploaded a file
+      upload_path = Rails.root.join("tmp", "uploads", uploaded.original_filename)
+      FileUtils.mkdir_p(upload_path.dirname)
+      File.binwrite(upload_path, uploaded.read)
+    elsif sample.present?
+      # user chose a sample CSV
+      upload_path = Rails.root.join("tmp", "#{sample}.csv")
+      raise "Sample file not found: #{upload_path}" unless File.exist?(upload_path)
+    else
+      raise "No file selected and no sample chosen"
+    end
 
-  config_path = Rails.root.join("tmp", "config.json")
-  File.write(config_path, JSON.pretty_generate(config))
+    # Test Config
+    config = {
+      remove_duplicates: raw_options["remove_duplicates"] == "1",
+      standardize_month: raw_options["standardize_month"] == "1",
+      month_column: raw_options["month_column"].presence || "month"
+    }
 
-  output_csv  = Rails.root.join("tmp", "outputs", "cleaned.csv")
-  output_xlsx = Rails.root.join("tmp", "outputs", "cleaned.xlsx")
-  FileUtils.mkdir_p(output_csv.dirname)
+    config_path = Rails.root.join("tmp", "config.json")
+    File.write(config_path, JSON.pretty_generate(config))
 
-  # Call Python with positional args, no long flags, to avoid any double dash
-  system(
-    "python3",
-    Rails.root.join("python", "check_publications_cleaning.py").to_s,
-    upload_path.to_s,
-    output_csv.to_s,
-    output_xlsx.to_s,
-    config_path.to_s
-  )
+    output_csv  = Rails.root.join("tmp", "outputs", "cleaned.csv")
+    output_xlsx = Rails.root.join("tmp", "outputs", "cleaned.xlsx")
+    FileUtils.mkdir_p(output_csv.dirname)
 
-  # Read head of cleaned CSV to show in browser
-  require "csv"
-  rows = CSV.read(output_csv, headers: true)
-  @headers = rows.headers
-  @preview_rows = rows.first(20)
+    python_script = Rails.root.join("lib", "assets", "python", "run_publication_cleaning.py").to_s
 
-  # render your view
-end
+    success = system(
+      "python3",
+      python_script,
+      upload_path.to_s,
+      output_csv.to_s,
+      output_xlsx.to_s,
+      config_path.to_s
+    )
+
+    unless success && File.exist?(output_csv)
+      raise "Cleaning script failed or output file missing"
+    end
+
+    require "csv"
+    rows = CSV.read(output_csv, headers: true)
+    @headers = rows.headers
+    @preview_rows = rows.first(20)
+
+    render :new
+  end
 end
