@@ -31,7 +31,18 @@
         <%= radio_button_tag "options[sample_csv]", "test3" %>
         Use <code>test3.csv</code> (TITLE, MONTH_COL)
       </label>
+
+      <label style="display:block; margin-bottom:4px;">
+        <%= radio_button_tag "options[sample_csv]", "test4" %>
+        Use <code>test4.csv</code> (title, month)
+      </label>
+
+      <label style="display:block; margin-bottom:4px;">
+        <%= radio_button_tag "options[sample_csv]", "test5" %>
+        Use <code>test5.csv</code> (title, month)
+      </label>
     </div>
+
   </div>
 
   <h3>Cleaning options</h3>
@@ -58,6 +69,25 @@
           style: "width:100%; padding:6px 8px; border-radius:6px; border:1px solid #d1d5db;" %>
     <p style="font-size:12px; color:#6b7280; margin-top:4px;">
       For test1 and test2 use <code>month</code>. For test3 use <code>MONTH_COL</code>.
+    </p>
+  </div>
+
+  <div style="margin-bottom:8px;">
+    <label>
+      <%= check_box_tag "options[strip_whitespace]", "1", true %>
+      Strip leading/trailing whitespace from all text columns
+    </label>
+  </div>
+
+  <div style="margin-bottom:16px;">
+    <label style="display:block; font-weight:500;">
+      Default month if missing
+    </label>
+    <%= text_field_tag "options[default_month]", "",
+          placeholder: "Example: January",
+          style: "width:100%; padding:6px 8px; border-radius:6px; border:1px solid #d1d5db;" %>
+    <p style="font-size:12px; color:#6b7280; margin-top:4px;">
+      If a row has an empty month, it will be replaced with this value.
     </p>
   </div>
 

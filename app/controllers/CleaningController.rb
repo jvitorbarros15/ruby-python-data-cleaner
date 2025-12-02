@@ -24,12 +24,16 @@ class CleaningController < ApplicationController
       raise "No file selected and no sample chosen"
     end
 
-    # Test Config
+    # Config
     config = {
       remove_duplicates: raw_options["remove_duplicates"] == "1",
       standardize_month: raw_options["standardize_month"] == "1",
-      month_column: raw_options["month_column"].presence || "month"
+      month_column: raw_options["month_column"].presence || "month",
+      strip_whitespace: raw_options["strip_whitespace"] == "1",
+      default_month: raw_options["default_month"].presence
     }
+
+
 
     config_path = Rails.root.join("tmp", "config.json")
     File.write(config_path, JSON.pretty_generate(config))
